@@ -120,12 +120,9 @@
   </div>
 
   <div class="results-toggle">
-    <button onclick="toggleResults()">📊 Veure resultats actuals</button>
-  </div>
-  <div class="spinner" id="spinner">Carregant resultats...</div>
-  <div id="results-panel">
-    <h3>Resultats acumulats</h3>
-    <div id="results-list"></div>
+    <a href="https://docs.google.com/spreadsheets/d/1xu5BAnMLzZvrEUi8xg1F6bnyuLASqbR2cWbXPFnFsI0/edit?usp=sharing" target="_blank">
+      <button style="background:transparent;border:1px solid #444;color:#aaa;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:0.85em;">📊 Veure resultats actuals</button>
+    </a>
   </div>
 </div>
 
@@ -254,37 +251,6 @@ async function enviar() {
   document.getElementById('comentaris').value = '';
 }
 
-async function toggleResults() {
-  const panel = document.getElementById('results-panel');
-  const spinner = document.getElementById('spinner');
-  if (panel.style.display === 'block') { panel.style.display = 'none'; return; }
-
-  spinner.style.display = 'block';
-  panel.style.display = 'none';
-
-  try {
-    const res = await fetch(APPS_SCRIPT_URL + '?action=results');
-    const data = await res.json();
-    const list = document.getElementById('results-list');
-    const sorted = Object.entries(data).sort((a,b) => b[1]-a[1]);
-    const max = sorted[0]?.[1] || 1;
-    list.innerHTML = sorted.length === 0
-      ? '<p style="color:#888">Encara no hi ha vots.</p>'
-      : sorted.map(([nom, n]) => `
-        <div class="result-row">
-          <div style="flex:1">
-            <div style="font-weight:600">${nom}</div>
-            <div class="bar" style="width:${Math.round(n/max*100)}%"></div>
-          </div>
-          <div style="font-weight:700;color:#e63946;margin-left:16px">${n} vot${n>1?'s':''}</div>
-        </div>`).join('');
-    panel.style.display = 'block';
-  } catch(e) {
-    document.getElementById('results-list').innerHTML = '<p style="color:#f66">Error carregant resultats.</p>';
-    panel.style.display = 'block';
-  }
-  spinner.style.display = 'none';
-}
 
 buildGrid('classiques', 'grid-classiques');
 buildGrid('especials', 'grid-especials');
