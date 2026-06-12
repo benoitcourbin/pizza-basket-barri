@@ -238,8 +238,15 @@ async function enviar() {
     });
   } catch(e) { console.warn('fetch error (no-cors normal)', e); }
 
-  document.getElementById('success-msg').style.display = 'block';
-  document.getElementById('success-msg').scrollIntoView({ behavior: 'smooth' });
+  // Build success message
+  const successEl = document.getElementById('success-msg');
+  let html = `<h2>✅ Gràcies, ${nom}!</h2>`;
+  html += `<p style="margin-top:12px;color:#ccc">🍕 <strong>${seleccionades.join(', ')}</strong></p>`;
+  if (comentaris) html += `<p style="margin-top:8px;color:#aaa;font-style:italic">💬 ${comentaris}</p>`;
+  html += `<p style="margin-top:12px;color:#888;font-size:0.85em">La teva comanda s'ha registrat correctament.</p>`;
+  successEl.innerHTML = html;
+  successEl.style.display = 'block';
+  successEl.scrollIntoView({ behavior: 'smooth' });
   btn.textContent = 'Enviat ✓';
   document.querySelectorAll('.pizza-item.checked').forEach(d => {
     d.classList.remove('checked');
