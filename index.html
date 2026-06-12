@@ -230,11 +230,17 @@ async function enviar() {
   btn.textContent = 'Enviant...';
 
   try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nom, persones, pizzes: seleccionades, comentaris, timestamp: new Date().toISOString() })
+    const params = new URLSearchParams({
+      action: 'vote',
+      nom: nom,
+      persones: persones,
+      pizzes: seleccionades.join('|'),
+      comentaris: comentaris,
+      timestamp: new Date().toISOString()
+    });
+    await fetch(APPS_SCRIPT_URL + '?' + params.toString(), {
+      method: 'GET',
+      mode: 'no-cors'
     });
   } catch(e) { console.warn('fetch error (no-cors normal)', e); }
 
