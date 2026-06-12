@@ -1,35 +1,30 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ca">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🍕 Comanda Pizzes — Club Bàsquet</title>
+<title>🍕 Comanda Pizzes — Club Bàsquet Roser</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: #f0f0f0; min-height: 100vh; }
-  
   header { background: #e63946; padding: 28px 20px; text-align: center; }
   header h1 { font-size: 2em; font-weight: 800; letter-spacing: -1px; }
   header p { margin-top: 6px; opacity: 0.9; font-size: 1em; }
-
-  .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
-
-  .field-block { background: #2a2a2a; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 80px; }
+  .field-block { background: #2a2a2a; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
   .field-block label { display: block; font-weight: 600; margin-bottom: 10px; color: #e63946; font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; }
-  input[type="text"], input[type="number"] {
+  input[type="text"], input[type="number"], textarea {
     width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444;
-    border-radius: 8px; color: #f0f0f0; font-size: 1em;
+    border-radius: 8px; color: #f0f0f0; font-size: 1em; font-family: inherit;
   }
-  input:focus { outline: none; border-color: #e63946; }
-
+  textarea { resize: vertical; min-height: 80px; }
+  input:focus, textarea:focus { outline: none; border-color: #e63946; }
   .section-title {
     font-size: 0.75em; font-weight: 700; text-transform: uppercase;
     letter-spacing: 2px; color: #888; margin: 28px 0 12px;
-    padding-left: 4px; border-left: 3px solid #e63946; padding-left: 10px;
+    border-left: 3px solid #e63946; padding-left: 10px;
   }
-
   .pizza-grid { display: flex; flex-direction: column; gap: 8px; }
-
   .pizza-item {
     display: flex; align-items: center; gap: 14px;
     background: #2a2a2a; border-radius: 10px; padding: 14px 16px;
@@ -38,9 +33,7 @@
   }
   .pizza-item:hover { background: #333; }
   .pizza-item.checked { background: #1f2f1f; border-color: #4caf50; }
-
   .pizza-item input[type="checkbox"] { display: none; }
-
   .checkmark {
     width: 22px; height: 22px; border-radius: 6px; border: 2px solid #555;
     flex-shrink: 0; display: flex; align-items: center; justify-content: center;
@@ -49,12 +42,10 @@
   .pizza-item.checked .checkmark { background: #4caf50; border-color: #4caf50; }
   .checkmark::after { content: '✓'; color: white; font-size: 14px; display: none; }
   .pizza-item.checked .checkmark::after { display: block; }
-
   .pizza-info { flex: 1; }
   .pizza-name { font-weight: 600; font-size: 0.98em; }
   .pizza-desc { font-size: 0.78em; color: #999; margin-top: 2px; line-height: 1.4; }
   .pizza-price { font-weight: 700; color: #e63946; font-size: 0.95em; white-space: nowrap; }
-
   .summary-bar {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: #111; border-top: 1px solid #333;
@@ -62,23 +53,17 @@
   }
   .summary-bar span { font-size: 0.9em; color: #aaa; }
   .summary-bar strong { color: #f0f0f0; }
-
   button.submit {
     background: #e63946; color: white; border: none; border-radius: 8px;
     padding: 12px 24px; font-size: 1em; font-weight: 700; cursor: pointer;
-    transition: background 0.2s;
   }
-  button.submit:hover { background: #c1121f; }
   button.submit:disabled { background: #555; cursor: default; }
-
   .success {
     display: none; text-align: center; padding: 40px 20px;
     background: #1f2f1f; border-radius: 12px; margin-top: 20px;
   }
   .success h2 { color: #4caf50; font-size: 1.5em; margin-bottom: 10px; }
   .success p { color: #aaa; }
-
-  /* Results panel */
   .results-toggle { text-align: center; margin: 30px 0 10px; }
   .results-toggle button {
     background: transparent; border: 1px solid #444; color: #aaa;
@@ -88,23 +73,24 @@
   #results-panel h3 { margin-bottom: 16px; color: #e63946; }
   .result-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #333; }
   .result-row:last-child { border-bottom: none; }
-  .bar { height: 6px; background: #e63946; border-radius: 3px; margin-top: 4px; transition: width 0.4s; }
+  .bar { height: 6px; background: #e63946; border-radius: 3px; margin-top: 4px; }
+  .spinner { display: none; text-align: center; padding: 20px; color: #aaa; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>🍕 Comanda de Pizzes</h1>
-  <p>Club de Bàsquet — Tria les teves pizzes</p>
+  <p>Club de Bàsquet Roser</p>
 </header>
 
 <div class="container">
   <div class="field-block">
-    <label>El teu nom</label>
+    <label>El teu nom *</label>
     <input type="text" id="nom" placeholder="Ex: Marc García">
   </div>
   <div class="field-block">
-    <label>Nombre de persones que mengeu</label>
+    <label>Nombre de persones que mengeu *</label>
     <input type="number" id="persones" min="1" max="20" placeholder="Ex: 4">
   </div>
 
@@ -123,14 +109,20 @@
   <div class="section-title">Dolça</div>
   <div class="pizza-grid" id="grid-dolca"></div>
 
+  <div class="field-block" style="margin-top:28px">
+    <label>💬 Comentaris / Al·lèrgies / Modificacions</label>
+    <textarea id="comentaris" placeholder="Ex: Calzone sense champiñones, al·lèrgia als fruits secs..."></textarea>
+  </div>
+
   <div class="success" id="success-msg">
     <h2>✅ Gràcies!</h2>
-    <p>La teva comanda s'ha registrat correctament.</p>
+    <p>La teva comanda s'ha registrat correctament.<br>Ens veiem a la pizza! 🍕</p>
   </div>
 
   <div class="results-toggle">
     <button onclick="toggleResults()">📊 Veure resultats actuals</button>
   </div>
+  <div class="spinner" id="spinner">Carregant resultats...</div>
   <div id="results-panel">
     <h3>Resultats acumulats</h3>
     <div id="results-list"></div>
@@ -143,6 +135,8 @@
 </div>
 
 <script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxnyKmQLz6QgbK3LUO_kr2cG6WFrRSjtcSs_Tc4dLFVxM1VoCkkyy6VIBFt2__JuvlWeg/exec';
+
 const pizzes = {
   classiques: [
     { nom: "Margherita", desc: "Tomate, mozzarella, albahaca", preu: "11.00€" },
@@ -184,15 +178,6 @@ const pizzes = {
   ]
 };
 
-const STORAGE_KEY = 'pizza_basket_votes';
-
-function getVotes() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
-}
-function saveVotes(votes) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(votes));
-}
-
 function buildGrid(seccio, gridId) {
   const grid = document.getElementById(gridId);
   pizzes[seccio].forEach((p, i) => {
@@ -207,8 +192,7 @@ function buildGrid(seccio, gridId) {
         <div class="pizza-name">${p.nom}</div>
         <div class="pizza-desc">${p.desc}</div>
       </div>
-      <div class="pizza-price">${p.preu}</div>
-    `;
+      <div class="pizza-price">${p.preu}</div>`;
     div.onclick = () => togglePizza(div, id);
     grid.appendChild(div);
   });
@@ -224,15 +208,19 @@ function togglePizza(div, id) {
 function updateCount() {
   const n = document.querySelectorAll('.pizza-item.checked').length;
   document.getElementById('count').textContent = n;
-  document.getElementById('btn-enviar').disabled = n === 0 || !document.getElementById('nom').value.trim();
+  const nom = document.getElementById('nom').value.trim();
+  const persones = document.getElementById('persones').value.trim();
+  document.getElementById('btn-enviar').disabled = n === 0 || !nom || !persones;
 }
 
 document.getElementById('nom').addEventListener('input', updateCount);
+document.getElementById('persones').addEventListener('input', updateCount);
 
-function enviar() {
+async function enviar() {
   const nom = document.getElementById('nom').value.trim();
-  const persones = document.getElementById('persones').value;
-  if (!nom) { alert('Si us plau, escriu el teu nom.'); return; }
+  const persones = document.getElementById('persones').value.trim();
+  const comentaris = document.getElementById('comentaris').value.trim();
+  if (!nom || !persones) { alert('Si us plau, omple el nom i el nombre de persones.'); return; }
 
   const seleccionades = [];
   document.querySelectorAll('.pizza-item.checked').forEach(div => {
@@ -240,40 +228,64 @@ function enviar() {
     seleccionades.push(pizzes[seccio][parseInt(idx)].nom);
   });
 
-  const votes = getVotes();
-  seleccionades.forEach(p => { votes[p] = (votes[p] || 0) + 1; });
-  saveVotes(votes);
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  btn.textContent = 'Enviant...';
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nom, persones, pizzes: seleccionades, comentaris, timestamp: new Date().toISOString() })
+    });
+  } catch(e) { console.warn('fetch error (no-cors normal)', e); }
 
   document.getElementById('success-msg').style.display = 'block';
   document.getElementById('success-msg').scrollIntoView({ behavior: 'smooth' });
-  document.getElementById('btn-enviar').disabled = true;
-  document.querySelectorAll('.pizza-item.checked').forEach(d => { d.classList.remove('checked'); document.getElementById(d.dataset.id).checked = false; });
+  btn.textContent = 'Enviat ✓';
+  document.querySelectorAll('.pizza-item.checked').forEach(d => {
+    d.classList.remove('checked');
+    document.getElementById(d.dataset.id).checked = false;
+  });
   document.getElementById('count').textContent = 0;
   document.getElementById('nom').value = '';
+  document.getElementById('persones').value = '';
+  document.getElementById('comentaris').value = '';
 }
 
-function toggleResults() {
+async function toggleResults() {
   const panel = document.getElementById('results-panel');
-  const votes = getVotes();
+  const spinner = document.getElementById('spinner');
   if (panel.style.display === 'block') { panel.style.display = 'none'; return; }
 
-  const sorted = Object.entries(votes).sort((a,b) => b[1]-a[1]);
-  const max = sorted[0]?.[1] || 1;
-  const list = document.getElementById('results-list');
-  list.innerHTML = sorted.length === 0
-    ? '<p style="color:#888">Encara no hi ha vots.</p>'
-    : sorted.map(([nom, n]) => `
-      <div class="result-row">
-        <div style="flex:1">
-          <div style="font-weight:600">${nom}</div>
-          <div class="bar" style="width:${Math.round(n/max*100)}%"></div>
-        </div>
-        <div style="font-weight:700;color:#e63946;margin-left:16px">${n} vot${n>1?'s':''}</div>
-      </div>`).join('');
-  panel.style.display = 'block';
+  spinner.style.display = 'block';
+  panel.style.display = 'none';
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?action=results');
+    const data = await res.json();
+    const list = document.getElementById('results-list');
+    const sorted = Object.entries(data).sort((a,b) => b[1]-a[1]);
+    const max = sorted[0]?.[1] || 1;
+    list.innerHTML = sorted.length === 0
+      ? '<p style="color:#888">Encara no hi ha vots.</p>'
+      : sorted.map(([nom, n]) => `
+        <div class="result-row">
+          <div style="flex:1">
+            <div style="font-weight:600">${nom}</div>
+            <div class="bar" style="width:${Math.round(n/max*100)}%"></div>
+          </div>
+          <div style="font-weight:700;color:#e63946;margin-left:16px">${n} vot${n>1?'s':''}</div>
+        </div>`).join('');
+    panel.style.display = 'block';
+  } catch(e) {
+    document.getElementById('results-list').innerHTML = '<p style="color:#f66">Error carregant resultats.</p>';
+    panel.style.display = 'block';
+  }
+  spinner.style.display = 'none';
 }
 
-// Build all grids
 buildGrid('classiques', 'grid-classiques');
 buildGrid('especials', 'grid-especials');
 buildGrid('premium', 'grid-premium');
